@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartspend.client.controller.TransactionDialogController"
+      spacing="18" prefWidth="480"
+      style="-fx-background-color: #0f172a; -fx-padding: 30; -fx-border-color: #334155; -fx-border-width: 1;">
+
+    <VBox spacing="4">
+        <Label fx:id="dialogTitle" text="Add Transaction" style="-fx-font-size: 20px; -fx-font-weight: 800; -fx-text-fill: white;"/>
+        <Label text="Enter financial transaction details in Indian Rupees (₹)" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"/>
+    </VBox>
+
+    <Label fx:id="errorLabel" text="" visible="false" managed="false"
+           style="-fx-text-fill: #f87171; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+
+    <!-- TYPE SELECTION -->
+    <VBox spacing="6">
+        <Label text="Transaction Type *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+        <HBox spacing="16">
+            <RadioButton fx:id="rbExpense" text="Expense (Debit)" selected="true" style="-fx-text-fill: #f87171; -fx-font-weight: bold;"/>
+            <RadioButton fx:id="rbIncome" text="Income (Credit)" style="-fx-text-fill: #34d399; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+
+    <!-- AMOUNT IN INR -->
+    <VBox spacing="6">
+        <Label text="Amount (₹ INR) *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+        <TextField fx:id="amountField" promptText="e.g. 5000.00" styleClass="custom-input"/>
+    </VBox>
+
+    <!-- CATEGORY SELECTION -->
+    <VBox spacing="6">
+        <Label text="Category *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+        <ComboBox fx:id="categoryBox" promptText="Select Category" maxWidth="Infinity" styleClass="custom-combo-box"/>
+    </VBox>
+
+    <!-- DESCRIPTION -->
+    <VBox spacing="6">
+        <Label text="Description *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+        <TextField fx:id="descriptionField" promptText="e.g. Grocery Supermarket Restock" styleClass="custom-input"/>
+    </VBox>
+
+    <!-- DATE -->
+    <VBox spacing="6">
+        <Label text="Transaction Date *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+        <DatePicker fx:id="datePicker" maxWidth="Infinity" styleClass="date-picker"/>
+    </VBox>
+
+    <!-- BUTTONS -->
+    <HBox spacing="12" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+        <Button text="Cancel" onAction="#handleCancel" styleClass="btn-secondary"/>
+        <Button fx:id="saveButton" text="Save Transaction" onAction="#handleSave" styleClass="btn-primary"/>
+    </HBox>
+</VBox>

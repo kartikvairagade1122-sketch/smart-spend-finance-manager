@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.smartspend.client.controller.DashboardController"
+            fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+
+    <VBox spacing="24" style="-fx-padding: 10 20 40 20;">
+
+        <!-- PAGE HEADER -->
+        <HBox alignment="CENTER_LEFT" spacing="16">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Financial Dashboard" styleClass="page-header-title"/>
+                <Label fx:id="welcomeSubtitle" text="Real-time multi-user financial tracking in Indian Rupees (₹)" styleClass="page-header-subtitle"/>
+            </VBox>
+            <Button text="🔄  Refresh" onAction="#loadDashboardData" styleClass="btn-secondary"/>
+            <Button text="➕  Add Transaction" onAction="#handleQuickAdd" styleClass="btn-primary"/>
+        </HBox>
+
+        <!-- CURRENT BALANCE BANNER -->
+        <HBox alignment="CENTER_LEFT" spacing="24" styleClass="balance-banner">
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="CURRENT NET BALANCE" styleClass="banner-label"/>
+                <Label fx:id="bannerBalanceLabel" text="₹0.00" styleClass="banner-amount"/>
+                <Label fx:id="bannerSubtext" text="Calculated from all verified user transactions" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 12px;"/>
+            </VBox>
+            <VBox alignment="CENTER_RIGHT" spacing="8">
+                <Label fx:id="bannerSavingsRateLabel" text="Monthly Savings: ₹0.00 (0.0%)" styleClass="banner-savings-tag"/>
+                <Label text="India Standard Time (IST)" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 11px;"/>
+            </VBox>
+        </HBox>
+
+        <!-- KPI 4-GRID -->
+        <GridPane hgap="20" vgap="16">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+            </columnConstraints>
+
+            <!-- CARD 1: ALL-TIME INCOME -->
+            <VBox spacing="8" styleClass="kpi-card" GridPane.columnIndex="0">
+                <Label text="TOTAL LIFETIME INCOME" styleClass="kpi-title"/>
+                <Label fx:id="kpiTotalIncome" text="₹0.00" styleClass="kpi-value-income"/>
+                <Label text="All verified credits" styleClass="kpi-subtext"/>
+            </VBox>
+
+            <!-- CARD 2: ALL-TIME EXPENSES -->
+            <VBox spacing="8" styleClass="kpi-card" GridPane.columnIndex="1">
+                <Label text="TOTAL LIFETIME EXPENSES" styleClass="kpi-title"/>
+                <Label fx:id="kpiTotalExpenses" text="₹0.00" styleClass="kpi-value-expense"/>
+                <Label text="All verified debits" styleClass="kpi-subtext"/>
+            </VBox>
+
+            <!-- CARD 3: MONTHLY INCOME -->
+            <VBox spacing="8" styleClass="kpi-card" GridPane.columnIndex="2">
+                <Label text="CURRENT MONTH INCOME" styleClass="kpi-title"/>
+                <Label fx:id="kpiMonthlyIncome" text="₹0.00" styleClass="kpi-value-income"/>
+                <Label text="This calendar month" styleClass="kpi-subtext"/>
+            </VBox>
+
+            <!-- CARD 4: MONTHLY EXPENSES -->
+            <VBox spacing="8" styleClass="kpi-card" GridPane.columnIndex="3">
+                <Label text="CURRENT MONTH EXPENSES" styleClass="kpi-title"/>
+                <Label fx:id="kpiMonthlyExpenses" text="₹0.00" styleClass="kpi-value-expense"/>
+                <Label text="This calendar month" styleClass="kpi-subtext"/>
+            </VBox>
+        </GridPane>
+
+        <!-- CHARTS SECTION -->
+        <HBox spacing="20" prefHeight="380">
+            <!-- 6-MONTH TREND LINE CHART -->
+            <VBox spacing="10" styleClass="kpi-card" HBox.hgrow="ALWAYS" prefWidth="640">
+                <Label text="Monthly Cash Flow Trends (Past 6 Months)" style="-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: 700;"/>
+                <LineChart fx:id="trendChart" styleClass="chart" VBox.vgrow="ALWAYS" legendVisible="true">
+                    <xAxis>
+                        <CategoryAxis label="Month" styleClass="axis"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Amount (₹)" styleClass="axis"/>
+                    </yAxis>
+                </LineChart>
+            </VBox>
+
+            <!-- EXPENSE BREAKDOWN PIE CHART -->
+            <VBox spacing="10" styleClass="kpi-card" prefWidth="480">
+                <Label text="Current Month Expense Breakdown" style="-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: 700;"/>
+                <PieChart fx:id="categoryPieChart" styleClass="chart" VBox.vgrow="ALWAYS" legendVisible="true"/>
+            </VBox>
+        </HBox>
+
+        <!-- RECENT TRANSACTIONS TABLE -->
+        <VBox spacing="12" styleClass="kpi-card">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Recent Financial Transactions" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: 700;" HBox.hgrow="ALWAYS"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="View All Transactions →" onAction="#handleViewAll" styleClass="btn-secondary" style="-fx-font-size: 12px; -fx-padding: 6 12;"/>
+            </HBox>
+
+            <TableView fx:id="recentTableView" prefHeight="220" styleClass="custom-table">
+                <columns>
+                    <TableColumn fx:id="colDate" text="Date" prefWidth="120"/>
+                    <TableColumn fx:id="colDesc" text="Description" prefWidth="300"/>
+                    <TableColumn fx:id="colCat" text="Category" prefWidth="180"/>
+                    <TableColumn fx:id="colType" text="Type" prefWidth="120"/>
+                    <TableColumn fx:id="colAmount" text="Amount (INR)" prefWidth="180"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

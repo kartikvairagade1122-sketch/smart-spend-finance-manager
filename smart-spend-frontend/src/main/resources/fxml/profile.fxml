@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.smartspend.client.controller.ProfileController"
+            fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+
+    <VBox spacing="24" maxWidth="900" style="-fx-padding: 10 20 40 20;">
+
+        <!-- HEADER -->
+        <VBox spacing="4">
+            <Label text="User Profile &amp; Account Settings" styleClass="page-header-title"/>
+            <Label text="Manage your security, personal identity, and financial settings" styleClass="page-header-subtitle"/>
+        </VBox>
+
+        <!-- USER CARD -->
+        <HBox spacing="24" alignment="CENTER_LEFT" styleClass="kpi-card" style="-fx-padding: 28 32;">
+            <StackPane>
+                <Circle radius="36" styleClass="user-avatar-circle"/>
+                <Label fx:id="avatarBigLetter" text="K" style="-fx-font-size: 28px; -fx-font-weight: 900; -fx-text-fill: white;"/>
+            </StackPane>
+
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label fx:id="profileFullName" text="Kartik Vairagade" style="-fx-font-size: 22px; -fx-font-weight: 800; -fx-text-fill: white;"/>
+                <Label fx:id="profileUsername" text="@kartik123" style="-fx-font-size: 14px; -fx-text-fill: #38bdf8; -fx-font-weight: 600;"/>
+                <Label fx:id="profileEmail" text="kartikvairagade0@gmail.com" style="-fx-font-size: 13px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+            <VBox alignment="CENTER_RIGHT" spacing="6">
+                <Label text="Active Account" styleClass="badge-income"/>
+                <Label text="Currency: ₹ INR" styleClass="currency-badge"/>
+            </VBox>
+        </HBox>
+
+        <!-- SECURITY: CHANGE PASSWORD CARD -->
+        <VBox spacing="18" styleClass="kpi-card" style="-fx-padding: 28 32;">
+            <VBox spacing="4">
+                <Label text="Security &amp; Password Management" style="-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: white;"/>
+                <Label text="Passwords are encrypted using industry-standard BCrypt hashing with work factor 12"
+                       style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+            <Label fx:id="pwdMessageLabel" text="" visible="false" managed="false"
+                   style="-fx-padding: 8 12; -fx-background-radius: 8; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+
+            <GridPane hgap="20" vgap="14">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33"/>
+                    <ColumnConstraints percentWidth="33"/>
+                    <ColumnConstraints percentWidth="34"/>
+                </columnConstraints>
+
+                <VBox spacing="6" GridPane.columnIndex="0">
+                    <Label text="Current Password *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+                    <PasswordField fx:id="currentPwdField" promptText="••••••••" styleClass="custom-input"/>
+                </VBox>
+
+                <VBox spacing="6" GridPane.columnIndex="1">
+                    <Label text="New Password *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+                    <PasswordField fx:id="newPwdField" promptText="Min 6 characters" styleClass="custom-input"/>
+                </VBox>
+
+                <VBox spacing="6" GridPane.columnIndex="2">
+                    <Label text="Confirm New Password *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+                    <PasswordField fx:id="confirmNewPwdField" promptText="••••••••" styleClass="custom-input"/>
+                </VBox>
+            </GridPane>
+
+            <HBox alignment="CENTER_RIGHT" style="-fx-padding: 6 0 0 0;">
+                <Button text="Update Password" onAction="#handleUpdatePassword" styleClass="btn-primary"/>
+            </HBox>
+        </VBox>
+
+        <!-- ARCHITECTURE & PRIVACY GUARANTEE -->
+        <VBox spacing="10" styleClass="kpi-card" style="-fx-padding: 24 28;">
+            <Label text="Privacy &amp; Data Isolation Guarantee" style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #34d399;"/>
+            <Label text="Your financial transactions, category targets, and monthly budgets are cryptographically tied to your user ID in the backend server. No other user can query, tamper with, or access your financial records."
+                   wrapText="true" style="-fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-line-spacing: 4;"/>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

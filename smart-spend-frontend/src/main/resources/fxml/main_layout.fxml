@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.smartspend.client.controller.MainLayoutController"
+            prefHeight="850.0" prefWidth="1320.0" style="-fx-background-color: #0b1120;">
+
+    <!-- TOP NAVBAR -->
+    <top>
+        <BorderPane styleClass="top-navbar">
+            <left>
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <ImageView fx:id="topLogo" fitHeight="42" preserveRatio="true"/>
+                    <VBox spacing="1" alignment="CENTER_LEFT">
+                        <Label text="Smart Spend" styleClass="brand-label"/>
+                        <Label text="Personal Finance Manager" styleClass="brand-subtext"/>
+                    </VBox>
+                </HBox>
+            </left>
+
+            <right>
+                <HBox spacing="16" alignment="CENTER_RIGHT">
+                    <Label text="₹ INR Indian Rupee" styleClass="currency-badge"/>
+
+                    <!-- USER PROFILE PILL -->
+                    <HBox spacing="10" alignment="CENTER" styleClass="user-profile-badge" fx:id="profilePill" onMouseClicked="#handleProfileClick" style="-fx-cursor: hand;">
+                        <StackPane>
+                            <Circle radius="16" styleClass="user-avatar-circle"/>
+                            <Label fx:id="userAvatarLetter" text="K" styleClass="user-avatar-text"/>
+                        </StackPane>
+                        <Label fx:id="userDisplayName" text="Kartik Vairagade" styleClass="user-name-text"/>
+                    </HBox>
+
+                    <!-- LOGOUT BUTTON -->
+                    <Button fx:id="topLogoutBtn" text="Logout" onAction="#handleLogout" styleClass="btn-danger" style="-fx-padding: 8 16;"/>
+                </HBox>
+            </right>
+        </BorderPane>
+    </top>
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox spacing="10" styleClass="sidebar">
+            <Label text="MENU NAVIGATION" styleClass="sidebar-heading"/>
+
+            <Button fx:id="navDashboard" text="📊  Dashboard" onAction="#showDashboard" maxWidth="Infinity" styleClass="nav-button, nav-button-active"/>
+            <Button fx:id="navTransactions" text="💳  All Transactions" onAction="#showTransactions" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="navIncomes" text="💰  Income Log" onAction="#showIncomes" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="navExpenses" text="💸  Expense Log" onAction="#showExpenses" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="navBudgets" text="🎯  Budgets &amp; Targets" onAction="#showBudgets" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="navReports" text="📈  Reports &amp; Analytics" onAction="#showReports" maxWidth="Infinity" styleClass="nav-button"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Label text="SETTINGS" styleClass="sidebar-heading"/>
+            <Button fx:id="navProfile" text="👤  User Profile" onAction="#showProfile" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="🚪  Sign Out" onAction="#handleLogout" maxWidth="Infinity" styleClass="logout-nav-button"/>
+        </VBox>
+    </left>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="main-content"/>
+    </center>
+</BorderPane>

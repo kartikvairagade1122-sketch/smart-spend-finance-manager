@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartspend.client.controller.TransactionsController"
+      spacing="20" style="-fx-padding: 10 20 20 20;" VBox.vgrow="ALWAYS">
+
+    <!-- PAGE HEADER -->
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label fx:id="pageTitle" text="Financial Transactions" styleClass="page-header-title"/>
+            <Label text="Search, filter, view, edit and delete your verified transactions" styleClass="page-header-subtitle"/>
+        </VBox>
+        <Button text="➕ Add Transaction" onAction="#handleAddTransaction" styleClass="btn-primary"/>
+    </HBox>
+
+    <!-- FILTER BAR -->
+    <HBox spacing="14" alignment="CENTER_LEFT" styleClass="kpi-card" style="-fx-padding: 16 20;">
+        <TextField fx:id="searchField" promptText="🔍 Search description..." prefWidth="220" styleClass="custom-input"/>
+        <ComboBox fx:id="typeFilterBox" promptText="All Types" prefWidth="140" styleClass="custom-combo-box"/>
+        <ComboBox fx:id="categoryFilterBox" promptText="All Categories" prefWidth="180" styleClass="custom-combo-box"/>
+        <DatePicker fx:id="startDatePicker" promptText="From Date" prefWidth="140" styleClass="date-picker"/>
+        <DatePicker fx:id="endDatePicker" promptText="To Date" prefWidth="140" styleClass="date-picker"/>
+
+        <Button text="Apply Filter" onAction="#handleApplyFilters" styleClass="btn-secondary"/>
+        <Button text="Reset" onAction="#handleResetFilters" styleClass="btn-secondary"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="recordCountLabel" text="Showing 0 transactions" style="-fx-text-fill: #94a3b8; -fx-font-weight: 600; -fx-font-size: 12px;"/>
+    </HBox>
+
+    <!-- TRANSACTIONS TABLEVIEW -->
+    <TableView fx:id="transactionsTable" styleClass="custom-table" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
+            <TableColumn fx:id="colDate" text="Date" prefWidth="120"/>
+            <TableColumn fx:id="colDesc" text="Description" prefWidth="350"/>
+            <TableColumn fx:id="colCategory" text="Category" prefWidth="180"/>
+            <TableColumn fx:id="colType" text="Type" prefWidth="120"/>
+            <TableColumn fx:id="colAmount" text="Amount (INR)" prefWidth="180"/>
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+        </columnResizePolicy>
+    </TableView>
+
+    <!-- ACTIONS ROW -->
+    <HBox spacing="16" alignment="CENTER_RIGHT">
+        <Button text="✏️  Edit Selected" onAction="#handleEditSelected" styleClass="btn-secondary"/>
+        <Button text="🗑️  Delete Selected" onAction="#handleDeleteSelected" styleClass="btn-danger"/>
+    </HBox>
+</VBox>

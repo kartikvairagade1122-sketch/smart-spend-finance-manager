@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartspend.client.controller.BudgetDialogController"
+      spacing="18" prefWidth="460"
+      style="-fx-background-color: #0f172a; -fx-padding: 30; -fx-border-color: #334155; -fx-border-width: 1;">
+
+    <VBox spacing="4">
+        <Label text="Set Monthly Budget Target" style="-fx-font-size: 20px; -fx-font-weight: 800; -fx-text-fill: white;"/>
+        <Label text="Assign a monthly expense spending ceiling in Indian Rupees (₹)" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"/>
+    </VBox>
+
+    <Label fx:id="errorLabel" text="" visible="false" managed="false"
+           style="-fx-text-fill: #f87171; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+
+    <VBox spacing="6">
+        <Label text="Expense Category *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+        <ComboBox fx:id="categoryBox" promptText="Select Category" maxWidth="Infinity" styleClass="custom-combo-box"/>
+    </VBox>
+
+    <VBox spacing="6">
+        <Label text="Monthly Limit (₹ INR) *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+        <TextField fx:id="limitField" promptText="e.g. 10000.00" styleClass="custom-input"/>
+    </VBox>
+
+    <HBox spacing="14">
+        <VBox spacing="6" HBox.hgrow="ALWAYS">
+            <Label text="Month *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+            <ComboBox fx:id="monthBox" maxWidth="Infinity" styleClass="custom-combo-box"/>
+        </VBox>
+        <VBox spacing="6" HBox.hgrow="ALWAYS">
+            <Label text="Year *" style="-fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+            <ComboBox fx:id="yearBox" maxWidth="Infinity" styleClass="custom-combo-box"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="12" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+        <Button text="Cancel" onAction="#handleCancel" styleClass="btn-secondary"/>
+        <Button text="Save Budget" onAction="#handleSave" styleClass="btn-primary"/>
+    </HBox>
+</VBox>
