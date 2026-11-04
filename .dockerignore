@@ -1,0 +1,10 @@
+**/.git
+**/.gitignore
+**/.idea
+**/*.iml
+**/target
+**/.vscode
+**/logs
+**/*.log
+.env
+smart-spend-frontend/target
