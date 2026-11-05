@@ -41,6 +41,19 @@ function initAuthenticatedApp() {
     const displayName = user.fullName || user.username || 'User';
     document.getElementById('user-display-name').textContent = displayName;
     document.getElementById('user-avatar').textContent = displayName.charAt(0).toUpperCase();
+
+    // Owner / Admin Access Check
+    const uname = (user.username || '').toLowerCase();
+    const uemail = (user.email || '').toLowerCase();
+    const isAdmin = uname === 'kartik' || uname === 'kartikdemo' || uemail.endsWith('@smartspend.in') || uemail === 'kartikvairagade1122@gmail.com';
+    const adminNav = document.getElementById('nav-admin');
+    if (adminNav) {
+      if (isAdmin) {
+        adminNav.classList.remove('hidden');
+      } else {
+        adminNav.classList.add('hidden');
+      }
+    }
   }
 
   // Pre-load global categories
@@ -147,7 +160,7 @@ async function handleRegisterSubmit(e) {
 
 // ================= NAVIGATION =================
 function navigateTo(tab) {
-  const tabs = ['dashboard', 'transactions', 'income', 'expense', 'budgets', 'portfolio', 'reports', 'profile'];
+  const tabs = ['dashboard', 'transactions', 'income', 'expense', 'budgets', 'portfolio', 'reports', 'profile', 'admin'];
   if (!tabs.includes(tab)) tab = 'dashboard';
 
   currentTab = tab;
@@ -191,6 +204,9 @@ function navigateTo(tab) {
       break;
     case 'profile':
       loadProfile();
+      break;
+    case 'admin':
+      loadAdminMetrics();
       break;
   }
 
@@ -1000,4 +1016,148 @@ async function handleChangePassword(e) {
   } catch (err) {
     showToast('Failed to change password: ' + err.message, 'error');
   }
+}
+
+
+// ================= ADMIN / OWNER CONTROLLER =================
+let cachedAdminUsers = [];
+
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+async function loadAdminMetrics() {
+  const tbody = document.getElementById('admin-users-table-body');
+  if (tbody) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" class="text-center py-10 text-slate-500">
+          <div class="flex items-center justify-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            <span>Fetching live database metrics...</span>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  try {
+    const res = await API.getAdminMetrics();
+    const data = res.data;
+    if (!data) return;
+
+    // KPI Cards
+    const kpiUsers = document.getElementById('admin-kpi-users');
+    const kpiTx = document.getElementById('admin-kpi-transactions');
+    const kpiHoldings = document.getElementById('admin-kpi-holdings');
+    const kpiCapital = document.getElementById('admin-kpi-capital');
+    const badge = document.getElementById('admin-users-badge');
+
+    if (kpiUsers) kpiUsers.textContent = (data.totalUsers || 0).toLocaleString();
+    if (kpiTx) kpiTx.textContent = (data.totalTransactions || 0).toLocaleString();
+    if (kpiHoldings) kpiHoldings.textContent = (data.totalStockHoldings || 0).toLocaleString();
+    if (kpiCapital) kpiCapital.textContent = formatINR(data.totalCapitalTracked || 0);
+    if (badge) badge.textContent = `${data.totalUsers || 0} registered user${data.totalUsers === 1 ? '' : 's'}`;
+
+    cachedAdminUsers = data.users || [];
+    renderAdminUsersTable(cachedAdminUsers);
+
+  } catch (err) {
+    console.error('Failed to load admin metrics:', err);
+    showToast('Failed to load admin stats: ' + err.message, 'error');
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" class="text-center py-10 text-red-400 font-medium">
+            Access denied or error loading metrics: ${escapeHtml(err.message)}
+          </td>
+        </tr>
+      `;
+    }
+  }
+}
+
+function renderAdminUsersTable(users) {
+  const tbody = document.getElementById('admin-users-table-body');
+  if (!tbody) return;
+
+  if (!users || users.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" class="text-center py-10 text-slate-500">
+          No registered users found matching query.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = users.map(u => {
+    const createdDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    }) : 'N/A';
+
+    const avatarInitial = (u.fullName || u.username || 'U').charAt(0).toUpperCase();
+
+    return `
+      <tr class="hover:bg-slate-800/40 transition">
+        <td class="py-3 px-4 font-mono text-slate-400 font-bold">#${u.id}</td>
+        <td class="py-3 px-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-full bg-blue-600/30 border border-blue-500/40 text-blue-300 flex items-center justify-center font-bold text-xs uppercase">
+              ${avatarInitial}
+            </div>
+            <div>
+              <div class="font-bold text-white">${escapeHtml(u.fullName || 'Unnamed')}</div>
+              <div class="text-[11px] text-slate-400">@${escapeHtml(u.username)}</div>
+            </div>
+          </div>
+        </td>
+        <td class="py-3 px-4 text-slate-300 font-mono text-[11px]">${escapeHtml(u.email || '-')}</td>
+        <td class="py-3 px-4 text-slate-400">${createdDate}</td>
+        <td class="py-3 px-4 text-center">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${u.transactionCount > 0 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-500'}">
+            ${u.transactionCount}
+          </span>
+        </td>
+        <td class="py-3 px-4 text-center">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${u.stockCount > 0 ? 'bg-purple-500/10 text-purple-400 border border-purple-500/30' : 'bg-slate-800 text-slate-500'}">
+            ${u.stockCount}
+          </span>
+        </td>
+        <td class="py-3 px-4 text-right font-bold text-white font-mono">
+          ${formatINR(u.totalInvested || 0)}
+        </td>
+        <td class="py-3 px-4 text-center">
+          <span class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${u.active ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
+            <span class="w-1.5 h-1.5 rounded-full ${u.active ? 'bg-emerald-400' : 'bg-red-400'}"></span>
+            <span>${u.active ? 'Active' : 'Inactive'}</span>
+          </span>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function filterAdminUsersTable() {
+  const query = (document.getElementById('admin-user-search')?.value || '').toLowerCase().trim();
+  if (!query) {
+    renderAdminUsersTable(cachedAdminUsers);
+    return;
+  }
+  const filtered = cachedAdminUsers.filter(u => {
+    return (u.fullName && u.fullName.toLowerCase().includes(query)) ||
+           (u.username && u.username.toLowerCase().includes(query)) ||
+           (u.email && u.email.toLowerCase().includes(query)) ||
+           String(u.id).includes(query);
+  });
+  renderAdminUsersTable(filtered);
 }

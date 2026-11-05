@@ -228,6 +228,16 @@
               <i data-lucide="pie-chart" class="w-4 h-4"></i>
               <span>Reports &amp; Analytics</span>
             </button>
+
+            <!-- Private Owner / Admin Tab (Only visible to platform owner/admin) -->
+            <button onclick="navigateTo('admin')" id="nav-admin"
+                    class="hidden nav-pill w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-amber-300 hover:text-amber-200 hover:bg-amber-500/10 border border-amber-500/30 transition">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i>
+                <span class="font-bold">👑 Admin Panel</span>
+              </div>
+              <span class="text-[9px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">Owner</span>
+            </button>
           </nav>
         </div>
 
@@ -717,6 +727,128 @@
                 Update Password
               </button>
             </form>
+          </div>
+        </section>
+
+        <!-- ================= TAB: ADMIN / OWNER PANEL ================= -->
+        <section id="page-admin" class="hidden space-y-6">
+          <!-- Page Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-gradient-to-r from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/20 rounded-2xl p-6">
+            <div class="space-y-1">
+              <div class="flex items-center space-x-2">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">Private SaaS Owner Portal</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
+                <span class="text-[11px] text-slate-400">Live Database Sync</span>
+              </div>
+              <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center space-x-2">
+                <span>Platform Metrics &amp; User Directory</span>
+              </h2>
+              <p class="text-xs text-slate-400">Monitor all registered users, system activity, and cumulative wealth tracked across Smart Spend.</p>
+            </div>
+            <div>
+              <button onclick="loadAdminMetrics()"
+                      class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition flex items-center space-x-2">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                <span>Refresh Live Stats</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Total Registered Users -->
+            <div class="glass-panel card-hover rounded-2xl p-5 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                <span>Total Registered Users</span>
+                <div class="p-2 rounded-xl bg-blue-500/10 text-blue-400">
+                  <i data-lucide="users" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div id="admin-kpi-users" class="text-3xl font-black text-white">--</div>
+              <div class="text-[11px] text-blue-400 font-medium">Active platform accounts</div>
+            </div>
+
+            <!-- Total Transactions Logged -->
+            <div class="glass-panel card-hover rounded-2xl p-5 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                <span>Total Transactions</span>
+                <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
+                  <i data-lucide="receipt" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div id="admin-kpi-transactions" class="text-3xl font-black text-emerald-400">--</div>
+              <div class="text-[11px] text-slate-400">Incomes &amp; expenses logged</div>
+            </div>
+
+            <!-- Total Stock Holdings -->
+            <div class="glass-panel card-hover rounded-2xl p-5 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                <span>Stock Portfolio Holdings</span>
+                <div class="p-2 rounded-xl bg-purple-500/10 text-purple-400">
+                  <i data-lucide="trending-up" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div id="admin-kpi-holdings" class="text-3xl font-black text-purple-400">--</div>
+              <div class="text-[11px] text-slate-400">Active equity positions</div>
+            </div>
+
+            <!-- System Capital Tracked -->
+            <div class="glass-panel card-hover rounded-2xl p-5 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                <span>Total Capital Tracked</span>
+                <div class="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+                  <i data-lucide="wallet" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div id="admin-kpi-capital" class="text-2xl sm:text-3xl font-black text-amber-400">--</div>
+              <div class="text-[11px] text-slate-400">Cumulative money tracked</div>
+            </div>
+          </div>
+
+          <!-- Registered Users Table Section -->
+          <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
+            <div class="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                  <span>Registered Users Directory</span>
+                  <span id="admin-users-badge" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-semibold">0 users</span>
+                </h3>
+                <p class="text-xs text-slate-400">Every user registered in your live database with individual stats</p>
+              </div>
+              <div class="flex items-center space-x-3">
+                <div class="relative">
+                  <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                  <input type="text" id="admin-user-search" oninput="filterAdminUsersTable()"
+                         placeholder="Search name, username, email..."
+                         class="form-input pl-9 pr-3 py-1.5 rounded-xl text-xs placeholder-slate-500 w-48 sm:w-64">
+                </div>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-900/80 text-slate-400 border-b border-slate-800">
+                  <tr>
+                    <th class="py-3 px-4 font-semibold">User ID</th>
+                    <th class="py-3 px-4 font-semibold">Full Name / Username</th>
+                    <th class="py-3 px-4 font-semibold">Email</th>
+                    <th class="py-3 px-4 font-semibold">Joined Date</th>
+                    <th class="py-3 px-4 font-semibold text-center">Transactions</th>
+                    <th class="py-3 px-4 font-semibold text-center">Stock Holdings</th>
+                    <th class="py-3 px-4 font-semibold text-right">Portfolio Invested</th>
+                    <th class="py-3 px-4 font-semibold text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-users-table-body" class="divide-y divide-slate-800/60">
+                  <tr>
+                    <td colspan="8" class="text-center py-10 text-slate-500">
+                      Loading user registry from live database...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 

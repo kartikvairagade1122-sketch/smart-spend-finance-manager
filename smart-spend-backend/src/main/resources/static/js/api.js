@@ -248,6 +248,11 @@ const API = {
       method: 'PUT',
       body: JSON.stringify(data)
     });
+  },
+
+  // Owner & Platform Admin Metrics
+  getAdminMetrics() {
+    return this.request('/admin/metrics');
   }
 };
 
