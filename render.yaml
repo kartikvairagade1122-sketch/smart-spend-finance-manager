@@ -1,13 +1,13 @@
 services:
   - type: web
-    name: smart-spend-app
+    name: smartspend
     env: docker
     dockerfilePath: Dockerfile
     plan: free
     region: singapore
     branch: main
     autoDeploy: true
-    healthCheckPath: /actuator/health
+    healthCheckPath: /
     envVars:
       - key: PORT
         value: 8080
