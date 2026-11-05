@@ -70,9 +70,13 @@ function switchAuthTab(tab) {
 }
 
 function fillDemoCredentials() {
-  document.getElementById('login-username').value = 'kartik';
-  document.getElementById('login-password').value = 'password123';
-  showToast('Sample credentials loaded. Click "Sign In" to proceed!', 'info');
+  document.getElementById('login-username').value = 'kartikdemo';
+  document.getElementById('login-password').value = 'Demo@12345';
+  showToast('Logging into live demo portfolio...', 'info');
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+  }
 }
 
 async function handleLoginSubmit(e) {

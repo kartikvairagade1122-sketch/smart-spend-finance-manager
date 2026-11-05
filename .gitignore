@@ -48,6 +48,10 @@ out/
 .factorypath
 .project
 .settings
+
+# Local binaries and tunnel tools
+tools/
+*.exe
 .springBeans
 .sts4-cache
 bin/

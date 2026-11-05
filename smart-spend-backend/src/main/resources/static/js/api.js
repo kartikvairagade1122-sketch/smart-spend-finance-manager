@@ -87,10 +87,10 @@ const API = {
   },
 
   // Auth Endpoints
-  login(username, password) {
+  login(usernameOrEmail, password) {
     return this.request('/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ usernameOrEmail, password })
     });
   },
 
