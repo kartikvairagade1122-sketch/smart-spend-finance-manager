@@ -248,7 +248,10 @@ public class PortfolioController implements Initializable {
             Stage stage = new Stage();
             stage.setTitle(item == null ? "Add Stock Investment" : "Edit Stock Investment");
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root, 520, 620);
+            stage.setScene(scene);
+            stage.setMinWidth(480);
+            stage.setMinHeight(560);
             stage.showAndWait();
 
             if (controller.isSaved()) {

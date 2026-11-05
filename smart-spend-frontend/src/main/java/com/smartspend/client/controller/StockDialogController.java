@@ -94,21 +94,28 @@ public class StockDialogController implements Initializable {
 
             Map<String, Object> quote = task.getValue();
             if (quote != null) {
+                Boolean valid = (Boolean) quote.get("valid");
+                Object priceObj = quote.get("currentPrice");
+                BigDecimal price = priceObj != null ? new BigDecimal(priceObj.toString()) : BigDecimal.ZERO;
+
+                if ((valid != null && !valid) || price.compareTo(BigDecimal.ZERO) <= 0) {
+                    quoteBanner.setVisible(false);
+                    quoteBanner.setManaged(false);
+                    showError("⚠️ Stock symbol '" + symbol + "' not found on NSE/BSE. Please check spelling (e.g. RELIANCE, TCS, INFY, TATAMOTORS, HDFCBANK).");
+                    return;
+                }
+
                 String compName = (String) quote.get("companyName");
                 if (compName != null && !compName.isBlank() && companyNameField.getText().isBlank()) {
                     companyNameField.setText(compName);
                 }
                 bannerCompanyName.setText(compName != null ? compName : symbol);
 
-                Object priceObj = quote.get("currentPrice");
-                if (priceObj != null) {
-                    BigDecimal price = new BigDecimal(priceObj.toString());
-                    bannerLivePrice.setText(CurrencyHelper.format(price));
+                bannerLivePrice.setText(CurrencyHelper.format(price));
 
-                    // If buy price is currently empty, prefill with current live price
-                    if (buyPriceField.getText().isBlank()) {
-                        buyPriceField.setText(price.toPlainString());
-                    }
+                // If buy price is currently empty, prefill with current live price
+                if (buyPriceField.getText().isBlank()) {
+                    buyPriceField.setText(price.toPlainString());
                 }
 
                 Object changePctObj = quote.get("dayChangePercent");
@@ -123,7 +130,9 @@ public class StockDialogController implements Initializable {
                 quoteBanner.setVisible(true);
                 quoteBanner.setManaged(true);
             } else {
-                showError("No quote found for symbol: " + symbol);
+                quoteBanner.setVisible(false);
+                quoteBanner.setManaged(false);
+                showError("⚠️ Stock symbol '" + symbol + "' not found. Please verify the NSE/BSE ticker.");
             }
         });
 

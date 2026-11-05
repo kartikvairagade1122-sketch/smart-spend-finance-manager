@@ -12,6 +12,7 @@ public class StockQuoteDto {
     private BigDecimal dayChangePercent;
     private String currency = "INR";
     private boolean marketOpen;
+    private boolean valid = true;
 
     public StockQuoteDto() {}
 
@@ -25,6 +26,13 @@ public class StockQuoteDto {
         this.dayChangePercent = dayChangePercent;
         this.currency = currency;
         this.marketOpen = marketOpen;
+        this.valid = currentPrice != null && currentPrice.compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    public StockQuoteDto(String symbol, String companyName, BigDecimal currentPrice, BigDecimal previousClose,
+                         BigDecimal dayChange, BigDecimal dayChangePercent, String currency, boolean marketOpen, boolean valid) {
+        this(symbol, companyName, currentPrice, previousClose, dayChange, dayChangePercent, currency, marketOpen);
+        this.valid = valid;
     }
 
     public String getSymbol() {
@@ -89,5 +97,13 @@ public class StockQuoteDto {
 
     public void setMarketOpen(boolean marketOpen) {
         this.marketOpen = marketOpen;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 }

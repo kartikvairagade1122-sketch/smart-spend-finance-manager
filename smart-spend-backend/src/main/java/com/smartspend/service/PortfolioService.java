@@ -120,8 +120,7 @@ public class PortfolioService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        String rawSymbol = request.getSymbol().trim().toUpperCase();
-        String symbol = rawSymbol.contains(".") ? rawSymbol : rawSymbol + ".NS";
+        String symbol = StockPriceService.normalizeSymbol(request.getSymbol());
 
         // Auto-fetch company name from live quote if not supplied
         String companyName = request.getCompanyName();
@@ -178,8 +177,7 @@ public class PortfolioService {
         StockHolding holding = holdingRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Stock holding not found with id: " + id));
 
-        String rawSymbol = request.getSymbol().trim().toUpperCase();
-        String symbol = rawSymbol.contains(".") ? rawSymbol : rawSymbol + ".NS";
+        String symbol = StockPriceService.normalizeSymbol(request.getSymbol());
 
         holding.setSymbol(symbol);
         if (request.getCompanyName() != null && !request.getCompanyName().isBlank()) {
