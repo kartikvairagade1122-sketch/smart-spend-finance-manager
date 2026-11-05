@@ -385,3 +385,91 @@ Transaction ID,Date,Type,Category,Description,Amount (INR)
   "confirmPassword": "newSecurePassword@2026"
 }
 ```
+
+
+---
+
+## 8. Live Stock Portfolio & Market Rates (`/api/portfolio`)
+
+### 8.1 Get Portfolio Summary & Live Valuation
+- **Method:** `GET /api/portfolio`
+- **Authentication:** Required
+- **Response (`200 OK`):**
+```json
+{
+  "success": true,
+  "message": "Portfolio retrieved successfully",
+  "data": {
+    "totalInvested": 12000.00,
+    "currentValue": 13106.00,
+    "totalPnl": 1106.00,
+    "totalPnlPercentage": 9.22,
+    "holdingsCount": 1,
+    "profitableCount": 1,
+    "lossCount": 0,
+    "holdings": [
+      {
+        "id": 1,
+        "symbol": "RELIANCE.NS",
+        "companyName": "RELIANCE INDUSTRIES LTD",
+        "quantity": 10,
+        "buyPrice": 1200.00,
+        "buyDate": "2026-10-15",
+        "livePrice": 1310.60,
+        "totalInvested": 12000.00,
+        "currentValue": 13106.00,
+        "pnlAmount": 1106.00,
+        "pnlPercentage": 9.22,
+        "dayChangeAmount": -3.00,
+        "dayChangePercent": -0.03,
+        "currency": "INR"
+      }
+    ],
+    "currency": "INR"
+  }
+}
+```
+
+### 8.2 Get Real-Time Stock Quote Preview (NSE)
+- **Method:** `GET /api/portfolio/quote/{symbol}`
+- **Authentication:** Required
+- **Example:** `GET /api/portfolio/quote/TCS`
+- **Response (`200 OK`):**
+```json
+{
+  "success": true,
+  "message": "Quote fetched successfully",
+  "data": {
+    "symbol": "TCS.NS",
+    "companyName": "TATA CONSULTANCY SERV LT",
+    "currentPrice": 2485.00,
+    "previousClose": 2436.00,
+    "dayChange": 49.00,
+    "dayChangePercent": 2.01,
+    "currency": "INR",
+    "marketOpen": true
+  }
+}
+```
+
+### 8.3 Add Stock Holding
+- **Method:** `POST /api/portfolio/holdings`
+- **Authentication:** Required
+- **Request Body:**
+```json
+{
+  "symbol": "TCS",
+  "companyName": "Tata Consultancy Services Ltd",
+  "quantity": 5,
+  "buyPrice": 2400.00,
+  "buyDate": "2026-11-01"
+}
+```
+
+### 8.4 Update Stock Holding
+- **Method:** `PUT /api/portfolio/holdings/{id}`
+- **Authentication:** Required (Anti-IDOR enforced)
+
+### 8.5 Delete Stock Holding
+- **Method:** `DELETE /api/portfolio/holdings/{id}`
+- **Authentication:** Required (Anti-IDOR enforced)

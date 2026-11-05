@@ -178,3 +178,19 @@ Database versioning is controlled using **Flyway Community 10.10.0**:
 
 - **`V1__init_schema.sql`**: Creates tables (`users`, `categories`, `transactions`, `budgets`, `refresh_tokens`, `password_reset_tokens`) and declares foreign key cascades and composite indexes.
 - **`V2__seed_default_categories.sql`**: Inserts 18 comprehensive default categories localized for Indian users (e.g., *Groceries & Kirana, Fuel & Commute, Mutual Funds / SIP, Rent & Maintenance*).
+
+
+### 3.6 Table: `stock_holdings`
+Stores user-owned equity holdings in Indian markets (NSE/BSE) for real-time portfolio tracking and profit/loss computation.
+
+| Column | Type | Nullable | Key | Default | Description |
+| :--- | :--- | :---: | :---: | :--- | :--- |
+| `id` | `BIGINT` | No | PK | Auto Inc | Unique holding ID |
+| `user_id` | `BIGINT` | No | FK | | Owner ID for strict multi-tenant isolation |
+| `symbol` | `VARCHAR(30)` | No | | | Ticker symbol with exchange (e.g. `'RELIANCE.NS'`, `'TCS.NS'`) |
+| `company_name` | `VARCHAR(150)` | No | | | Full corporate name (e.g. `'Reliance Industries Ltd'`) |
+| `quantity` | `INT` | No | | | Number of equity shares purchased |
+| `buy_price` | `DECIMAL(12, 2)`| No | | | Acquisition price per share in Indian Rupees (`₹`) |
+| `buy_date` | `DATE` | No | | | Date of investment acquisition |
+| `created_at` | `DATETIME` | No | | `CURRENT_TIMESTAMP` | Insertion audit timestamp |
+| `updated_at` | `DATETIME` | No | | `CURRENT_TIMESTAMP` | Last modification audit timestamp |

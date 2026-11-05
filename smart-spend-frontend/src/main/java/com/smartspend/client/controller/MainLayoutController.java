@@ -31,6 +31,7 @@ public class MainLayoutController implements Initializable {
     @FXML private Button navIncomes;
     @FXML private Button navExpenses;
     @FXML private Button navBudgets;
+    @FXML private Button navPortfolio;
     @FXML private Button navReports;
     @FXML private Button navProfile;
 
@@ -91,6 +92,12 @@ public class MainLayoutController implements Initializable {
     public void showBudgets() {
         setActiveNav(navBudgets);
         loadViewIntoContentArea("/fxml/budgets.fxml");
+    }
+
+    @FXML
+    public void showPortfolio() {
+        setActiveNav(navPortfolio);
+        loadViewIntoContentArea("/fxml/portfolio.fxml");
     }
 
     @FXML

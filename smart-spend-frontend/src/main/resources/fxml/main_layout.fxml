@@ -53,7 +53,8 @@
             <Button fx:id="navIncomes" text="💰  Income Log" onAction="#showIncomes" maxWidth="Infinity" styleClass="nav-button"/>
             <Button fx:id="navExpenses" text="💸  Expense Log" onAction="#showExpenses" maxWidth="Infinity" styleClass="nav-button"/>
             <Button fx:id="navBudgets" text="🎯  Budgets &amp; Targets" onAction="#showBudgets" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button fx:id="navReports" text="📈  Reports &amp; Analytics" onAction="#showReports" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="navPortfolio" text="📈  Live Stocks &amp; Portfolio" onAction="#showPortfolio" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="navReports" text="📋  Reports &amp; Analytics" onAction="#showReports" maxWidth="Infinity" styleClass="nav-button"/>
 
             <Region VBox.vgrow="ALWAYS"/>
 

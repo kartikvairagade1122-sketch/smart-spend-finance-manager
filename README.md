@@ -115,10 +115,17 @@ sequenceDiagram
 - Category-wise aggregate spending distribution.
 - **CSV Data Export:** One-click download of filtered financial records in comma-separated values format for Excel, Google Sheets, or tax filing.
 
-### 7. Modern Dark Fintech JavaFX Interface
+### 7. Live Stock Market Portfolio & Real-Time Valuation (NSE / BSE)
+- **Live Market Rates Integration:** Real-time equity quote streaming for Indian stocks (e.g. `RELIANCE.NS`, `TCS.NS`, `INFY.NS`).
+- **Comprehensive Investment Tracking:** Record shares, acquisition price, and purchase dates.
+- **Dynamic Valuation & P&L Calculation:** Computes Total Invested, Current Portfolio Valuation, Overall Returns in `₹` and `%`, and daily price fluctuations.
+- **Portfolio Asset Allocation Visuals:** Interactive JavaFX Pie Chart displaying asset distribution by market value.
+- **Anti-IDOR Multi-Tenant Security:** Every user maintains a strictly confidential equity journal.
+
+### 8. Modern Dark Fintech JavaFX Interface
 - High-contrast Dark Fintech styling engineered in modern CSS (`theme.css`).
 - Asynchronous non-blocking network operations executed via JavaFX `Task` and `Platform.runLater` to guarantee zero UI lag or freezing.
-- Dynamic modal dialogs for transaction and budget creation/editing.
+- Dynamic modal dialogs for transaction, budget, and stock investment creation/editing.
 
 ---
 

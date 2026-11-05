@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartspend.client.controller.StockDialogController"
+      spacing="16.0" prefWidth="480.0"
+      stylesheets="@../css/theme.css"
+      style="-fx-background-color: #0f172a; -fx-padding: 24;">
+
+    <!-- Dialog Header -->
+    <VBox spacing="4.0">
+        <Label fx:id="dialogTitle" text="Add Stock Investment"
+               style="-fx-font-size: 20px; -fx-font-weight: 800; -fx-text-fill: white;"/>
+        <Label text="Track Indian NSE/BSE equities with real-time market valuations in Indian Rupees (₹)."
+               style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;" wrapText="true"/>
+    </VBox>
+
+    <!-- Error Label -->
+    <Label fx:id="errorLabel" visible="false" managed="false"
+           style="-fx-background-color: rgba(239, 68, 68, 0.15); -fx-text-fill: #f87171; -fx-padding: 8 12; -fx-background-radius: 6; -fx-font-size: 12px;"
+           wrapText="true"/>
+
+    <!-- Stock Symbol & Live Quote Lookup -->
+    <VBox spacing="6.0">
+        <Label text="Stock Symbol (NSE / BSE)" style="-fx-text-fill: #cbd5e1; -fx-font-weight: 600; -fx-font-size: 13px;"/>
+        <HBox spacing="8.0" alignment="CENTER_LEFT">
+            <TextField fx:id="symbolField" promptText="e.g. RELIANCE, TCS, INFY, TATAMOTORS"
+                       styleClass="input-field" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="fetchQuoteBtn" text="🔍 Live Price" onAction="#handleFetchQuote"
+                    styleClass="btn-secondary" style="-fx-padding: 8 14; -fx-font-size: 12px;"/>
+        </HBox>
+        <Label text="Note: Auto-appends '.NS' for National Stock Exchange if omitted."
+               style="-fx-font-size: 11px; -fx-text-fill: #64748b;"/>
+    </VBox>
+
+    <!-- Live Quote Banner (Auto-populated) -->
+    <HBox fx:id="quoteBanner" visible="false" managed="false" alignment="CENTER_LEFT" spacing="12.0"
+          style="-fx-background-color: rgba(16, 185, 129, 0.12); -fx-border-color: rgba(16, 185, 129, 0.3); -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10 14;">
+        <VBox HBox.hgrow="ALWAYS" spacing="2.0">
+            <Label fx:id="bannerCompanyName" text="Company Name" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 13px;"/>
+            <Label fx:id="bannerExchange" text="NSE India" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+        </VBox>
+        <VBox alignment="CENTER_RIGHT" spacing="2.0">
+            <Label fx:id="bannerLivePrice" text="₹0.00" style="-fx-font-weight: 800; -fx-text-fill: #34d399; -fx-font-size: 15px;"/>
+            <Label fx:id="bannerDayChange" text="+0.00%" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #34d399;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Company Name Field -->
+    <VBox spacing="6.0">
+        <Label text="Company Name" style="-fx-text-fill: #cbd5e1; -fx-font-weight: 600; -fx-font-size: 13px;"/>
+        <TextField fx:id="companyNameField" promptText="e.g. Reliance Industries Ltd"
+                   styleClass="input-field"/>
+    </VBox>
+
+    <!-- Quantity & Buy Price in 2 Columns -->
+    <HBox spacing="16.0">
+        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+            <Label text="Number of Shares (Qty)" style="-fx-text-fill: #cbd5e1; -fx-font-weight: 600; -fx-font-size: 13px;"/>
+            <TextField fx:id="quantityField" promptText="e.g. 10"
+                       styleClass="input-field"/>
+        </VBox>
+
+        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+            <Label text="Buy Price per Share (₹)" style="-fx-text-fill: #cbd5e1; -fx-font-weight: 600; -fx-font-size: 13px;"/>
+            <TextField fx:id="buyPriceField" promptText="e.g. 1250.00"
+                       styleClass="input-field"/>
+        </VBox>
+    </HBox>
+
+    <!-- Purchase Date -->
+    <VBox spacing="6.0">
+        <Label text="Purchase Date" style="-fx-text-fill: #cbd5e1; -fx-font-weight: 600; -fx-font-size: 13px;"/>
+        <DatePicker fx:id="buyDatePicker" maxWidth="Infinity" styleClass="input-field"/>
+    </VBox>
+
+    <!-- Total Investment Preview -->
+    <HBox alignment="CENTER_LEFT" spacing="8.0" style="-fx-padding: 4 0;">
+        <Label text="Calculated Total Invested:" style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;"/>
+        <Label fx:id="totalInvestedPreview" text="₹0.00" style="-fx-text-fill: #38bdf8; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+    </HBox>
+
+    <!-- Action Buttons -->
+    <HBox spacing="12.0" alignment="CENTER_RIGHT" style="-fx-padding: 12 0 0 0;">
+        <Button text="Cancel" onAction="#handleCancel"
+                styleClass="btn-secondary" style="-fx-padding: 9 18;"/>
+        <Button fx:id="saveButton" text="💾 Save to Portfolio" onAction="#handleSave"
+                styleClass="btn-primary" style="-fx-padding: 9 22;"/>
+    </HBox>
+
+</VBox>

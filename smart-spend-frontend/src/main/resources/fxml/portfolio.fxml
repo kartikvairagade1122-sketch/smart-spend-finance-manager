@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.smartspend.client.controller.PortfolioController"
+            fitToWidth="true"
+            stylesheets="@../css/theme.css"
+            styleClass="main-scroll-pane">
+
+    <VBox spacing="24.0" style="-fx-padding: 32;">
+
+        <!-- Top Header & Action Row -->
+        <HBox alignment="CENTER_LEFT" spacing="16.0">
+            <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <Label text="Live Stock Portfolio" styleClass="page-title"/>
+                    <Label text="● NSE LIVE"
+                           style="-fx-background-color: rgba(16, 185, 129, 0.15); -fx-text-fill: #34d399; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 4 10; -fx-background-radius: 12;"/>
+                </HBox>
+                <Label text="Real-time Indian equity valuations, live market quotes, and profit &amp; loss analysis in Indian Rupees (₹)."
+                       style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;"/>
+            </VBox>
+
+            <HBox spacing="12.0" alignment="CENTER_RIGHT">
+                <Button fx:id="refreshBtn" text="🔄 Refresh Rates" onAction="#handleRefresh"
+                        styleClass="btn-secondary" style="-fx-padding: 10 18;"/>
+                <Button text="➕ Add Stock" onAction="#handleAddStock"
+                        styleClass="btn-primary" style="-fx-padding: 10 20;"/>
+            </HBox>
+        </HBox>
+
+        <!-- KPI Summary Cards (4 Cards) -->
+        <HBox spacing="20.0">
+            <!-- Card 1: Total Invested -->
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8.0">
+                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                    <Label text="💼 Total Invested" style="-fx-text-fill: #94a3b8; -fx-font-size: 13px; -fx-font-weight: 600;"/>
+                </HBox>
+                <Label fx:id="kpiInvested" text="₹0.00" styleClass="kpi-value"/>
+                <Label text="Total capital deployed" style="-fx-text-fill: #64748b; -fx-font-size: 11px;"/>
+            </VBox>
+
+            <!-- Card 2: Current Portfolio Value -->
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8.0">
+                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                    <Label text="📈 Current Market Value" style="-fx-text-fill: #94a3b8; -fx-font-size: 13px; -fx-font-weight: 600;"/>
+                </HBox>
+                <Label fx:id="kpiCurrentValue" text="₹0.00" styleClass="kpi-value" style="-fx-text-fill: #38bdf8;"/>
+                <Label text="Real-time NSE valuation" style="-fx-text-fill: #64748b; -fx-font-size: 11px;"/>
+            </VBox>
+
+            <!-- Card 3: Total Returns / P&L -->
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8.0">
+                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                    <Label text="📊 Overall Profit / Loss" style="-fx-text-fill: #94a3b8; -fx-font-size: 13px; -fx-font-weight: 600;"/>
+                </HBox>
+                <Label fx:id="kpiTotalPnl" text="₹0.00 (0.00%)" styleClass="kpi-value" style="-fx-text-fill: #34d399;"/>
+                <Label fx:id="kpiPnlSubtext" text="0 profitable / 0 in loss" style="-fx-text-fill: #64748b; -fx-font-size: 11px;"/>
+            </VBox>
+
+            <!-- Card 4: Holdings Count -->
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="8.0">
+                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                    <Label text="🏢 Active Holdings" style="-fx-text-fill: #94a3b8; -fx-font-size: 13px; -fx-font-weight: 600;"/>
+                </HBox>
+                <Label fx:id="kpiHoldingsCount" text="0 Stocks" styleClass="kpi-value"/>
+                <Label text="NSE / BSE listed assets" style="-fx-text-fill: #64748b; -fx-font-size: 11px;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Main Content Area: Table + Pie Chart -->
+        <HBox spacing="24.0">
+
+            <!-- Left: Live Stocks Table View -->
+            <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS" spacing="16.0">
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <Label text="Your Equity Holdings" style="-fx-font-size: 16px; -fx-font-weight: 800; -fx-text-fill: white;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lastUpdatedLabel" text="Updated: Just now" style="-fx-text-fill: #64748b; -fx-font-size: 11px;"/>
+                </HBox>
+
+                <TableView fx:id="stocksTable" prefHeight="400.0" VBox.vgrow="ALWAYS" styleClass="transaction-table">
+                    <columns>
+                        <TableColumn fx:id="colSymbol" text="Symbol" prefWidth="110.0"/>
+                        <TableColumn fx:id="colCompany" text="Company Name" prefWidth="180.0"/>
+                        <TableColumn fx:id="colQuantity" text="Shares" prefWidth="70.0"/>
+                        <TableColumn fx:id="colBuyPrice" text="Avg Buy (₹)" prefWidth="110.0"/>
+                        <TableColumn fx:id="colLivePrice" text="Live Price (₹)" prefWidth="120.0"/>
+                        <TableColumn fx:id="colCurrentVal" text="Current Value (₹)" prefWidth="130.0"/>
+                        <TableColumn fx:id="colPnl" text="Total Returns (P&amp;L)" prefWidth="160.0"/>
+                    </columns>
+                    <placeholder>
+                        <VBox alignment="CENTER" spacing="12.0" style="-fx-padding: 40;">
+                            <Label text="No stock investments recorded yet." style="-fx-text-fill: #94a3b8; -fx-font-size: 14px; -fx-font-weight: 600;"/>
+                            <Label text="Click '+ Add Stock' to start tracking your Indian share portfolio." style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+                        </VBox>
+                    </placeholder>
+                </TableView>
+
+                <HBox alignment="CENTER_RIGHT" spacing="12.0">
+                    <Button text="✏️ Edit Selected" onAction="#handleEditSelected" styleClass="btn-secondary" style="-fx-padding: 8 16;"/>
+                    <Button text="🗑️ Delete Selected" onAction="#handleDeleteSelected" styleClass="btn-danger" style="-fx-padding: 8 16;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Right: Portfolio Allocation Pie Chart -->
+            <VBox styleClass="kpi-card" prefWidth="380.0" spacing="16.0">
+                <Label text="Portfolio Allocation" style="-fx-font-size: 16px; -fx-font-weight: 800; -fx-text-fill: white;"/>
+                <Label text="Asset distribution by current market value" style="-fx-text-fill: #94a3b8; -fx-font-size: 12px;"/>
+                <PieChart fx:id="portfolioPieChart" legendSide="BOTTOM" labelsVisible="true" prefHeight="330.0"/>
+            </VBox>
+
+        </HBox>
+
+    </VBox>
+</ScrollPane>
