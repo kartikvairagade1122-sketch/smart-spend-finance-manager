@@ -1,0 +1,142 @@
+/* Smart Spend - Enterprise Modern Web Styling */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --primary-glow: rgba(59, 130, 246, 0.25);
+  --success-glow: rgba(16, 185, 129, 0.25);
+  --danger-glow: rgba(239, 68, 68, 0.25);
+}
+
+* {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: #0b1120;
+  color: #f8fafc;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Glassmorphism & Cards */
+.glass-panel {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Gradients */
+.balance-gradient {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #0284c7 100%);
+  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+}
+
+.stock-gradient {
+  background: linear-gradient(135deg, #064e3b 0%, #059669 50%, #10b981 100%);
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.35);
+}
+
+/* Active Nav Pill */
+.nav-pill.active {
+  background: linear-gradient(to right, #2563eb, #3b82f6);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+}
+
+.nav-pill {
+  transition: all 0.2s ease;
+  color: #94a3b8;
+}
+
+.nav-pill:hover:not(.active) {
+  background: rgba(51, 65, 85, 0.5);
+  color: #f1f5f9;
+}
+
+/* Input elements */
+.form-input {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  color: #f8fafc;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  background: rgba(11, 17, 32, 0.82);
+  backdrop-filter: blur(8px);
+}
+
+/* Toasts */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  animation: slideIn 0.3s ease-out forwards;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulsing Badge */
+.pulse-dot {
+  animation: pulseAnimation 2s infinite;
+}
+
+@keyframes pulseAnimation {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}

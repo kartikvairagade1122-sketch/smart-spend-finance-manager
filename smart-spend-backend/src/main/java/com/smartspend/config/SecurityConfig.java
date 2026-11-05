@@ -44,6 +44,19 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/",
+                    "/index.html",
+                    "/static/**",
+                    "/css/**",
+                    "/js/**",
+                    "/images/**",
+                    "/favicon.ico",
+                    "/*.html",
+                    "/*.js",
+                    "/*.css",
+                    "/*.png",
+                    "/*.svg",
+                    "/*.ico",
                     "/api/auth/**",
                     "/v3/api-docs/**",
                     "/v3/api-docs.yaml",
