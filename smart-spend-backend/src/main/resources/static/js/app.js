@@ -562,6 +562,10 @@ async function handleTransactionSave(e) {
 
   const payload = { type, amount, categoryId, description, transactionDate };
 
+  // Instant response: close modal immediately so UI never freezes
+  closeTransactionModal();
+  showToast(id ? 'Updating transaction...' : 'Saving transaction...', 'info');
+
   try {
     if (id) {
       await API.updateTransaction(id, payload);
@@ -570,13 +574,13 @@ async function handleTransactionSave(e) {
       await API.createTransaction(payload);
       showToast('Transaction added successfully!', 'success');
     }
-    closeTransactionModal();
     if (currentTab === 'dashboard') loadDashboard();
     else if (currentTab === 'transactions') loadTransactions();
     else if (currentTab === 'income') loadTypeTransactions('INCOME', 'income-table-body');
     else if (currentTab === 'expense') loadTypeTransactions('EXPENSE', 'expense-table-body');
   } catch (err) {
     showToast('Failed to save transaction: ' + err.message, 'error');
+    if (currentTab === 'dashboard') loadDashboard();
   }
 }
 
@@ -810,20 +814,18 @@ async function handleStockSave(e) {
   }
 
   const payload = { symbol, companyName, quantity, buyPrice, buyDate };
-  const saveBtn = document.getElementById('stock-save-btn');
+
+  // Instant response: close modal immediately so UI never freezes
+  closeStockModal();
+  showToast(`Saving ${symbol} to portfolio...`, 'info');
 
   try {
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving...';
     await API.addStockHolding(payload);
     showToast(`Added ${symbol} to your portfolio!`, 'success');
-    closeStockModal();
-    loadPortfolio();
+    if (currentTab === 'portfolio') loadPortfolio();
   } catch (err) {
     showToast('Failed to save stock: ' + err.message, 'error');
-  } finally {
-    saveBtn.disabled = false;
-    saveBtn.textContent = '💾 Save to Portfolio';
+    if (currentTab === 'portfolio') loadPortfolio();
   }
 }
 

@@ -42,27 +42,67 @@ public class DashboardService {
         if (totalExpenses == null) totalExpenses = BigDecimal.ZERO;
 
         BigDecimal currentBalance = totalIncome.subtract(totalExpenses);
-
         response.setTotalIncome(totalIncome);
         response.setTotalExpenses(totalExpenses);
         response.setCurrentBalance(currentBalance);
 
-        // 2. Current Month Calculations
+        // 2. Fetch past 6 months transactions with Category eagerly joined (Single query)
         LocalDate now = LocalDate.now();
         YearMonth currentYearMonth = YearMonth.from(now);
         LocalDate startOfMonth = currentYearMonth.atDay(1);
         LocalDate endOfMonth = currentYearMonth.atEndOfMonth();
+        LocalDate sixMonthsAgoStart = currentYearMonth.minusMonths(5).atDay(1);
 
-        BigDecimal monthlyIncome = transactionRepository.sumAmountByUserIdAndTypeAndDateRange(
-                userId, TransactionType.INCOME, startOfMonth, endOfMonth);
-        BigDecimal monthlyExpenses = transactionRepository.sumAmountByUserIdAndTypeAndDateRange(
-                userId, TransactionType.EXPENSE, startOfMonth, endOfMonth);
+        List<Transaction> recentTransactions = transactionRepository.findRecentWithCategory(userId, sixMonthsAgoStart);
+        if (recentTransactions == null) {
+            recentTransactions = Collections.emptyList();
+        }
 
-        if (monthlyIncome == null) monthlyIncome = BigDecimal.ZERO;
-        if (monthlyExpenses == null) monthlyExpenses = BigDecimal.ZERO;
+        // 3. Recent 5 Transactions
+        List<TransactionResponse> recent5;
+        if (!recentTransactions.isEmpty()) {
+            recent5 = recentTransactions.stream()
+                    .limit(5)
+                    .map(transactionService::mapToResponse)
+                    .collect(Collectors.toList());
+        } else {
+            List<Transaction> top5 = transactionRepository.findTop5ByUserIdOrderByTransactionDateDescIdDesc(userId);
+            recent5 = (top5 != null ? top5 : Collections.<Transaction>emptyList()).stream()
+                    .map(transactionService::mapToResponse)
+                    .collect(Collectors.toList());
+        }
+        response.setRecentTransactions(recent5);
+
+        // 4. Current Month Calculations & Category Breakdown (In-memory)
+        BigDecimal monthlyIncome = BigDecimal.ZERO;
+        BigDecimal monthlyExpenses = BigDecimal.ZERO;
+
+        Map<String, BigDecimal> categorySums = new HashMap<>();
+        Map<String, String> categoryColors = new HashMap<>();
+        Map<String, String> categoryIcons = new HashMap<>();
+        Map<String, Long> categoryCounts = new HashMap<>();
+
+        for (Transaction t : recentTransactions) {
+            LocalDate date = t.getTransactionDate();
+            if (date != null && !date.isBefore(startOfMonth) && !date.isAfter(endOfMonth)) {
+                if (t.getType() == TransactionType.INCOME) {
+                    monthlyIncome = monthlyIncome.add(t.getAmount());
+                } else if (t.getType() == TransactionType.EXPENSE) {
+                    monthlyExpenses = monthlyExpenses.add(t.getAmount());
+
+                    String catName = t.getCategory() != null ? t.getCategory().getName() : "Other Expense";
+                    String catColor = t.getCategory() != null ? t.getCategory().getColor() : "#64748b";
+                    String catIcon = t.getCategory() != null ? t.getCategory().getIcon() : "tag";
+
+                    categorySums.merge(catName, t.getAmount(), BigDecimal::add);
+                    categoryColors.putIfAbsent(catName, catColor);
+                    categoryIcons.putIfAbsent(catName, catIcon);
+                    categoryCounts.merge(catName, 1L, Long::sum);
+                }
+            }
+        }
 
         BigDecimal monthlySavings = monthlyIncome.subtract(monthlyExpenses);
-
         double savingsRate = 0.0;
         if (monthlyIncome.compareTo(BigDecimal.ZERO) > 0) {
             savingsRate = monthlySavings.divide(monthlyIncome, 4, RoundingMode.HALF_UP)
@@ -76,35 +116,6 @@ public class DashboardService {
         response.setSavingsRate(Math.round(savingsRate * 10.0) / 10.0);
         response.setCurrencySymbol("₹");
         response.setCurrencyCode("INR");
-
-        // 3. Recent 5 Transactions
-        List<TransactionResponse> recent = transactionRepository.findTop5ByUserIdOrderByTransactionDateDescIdDesc(userId)
-                .stream()
-                .map(transactionService::mapToResponse)
-                .collect(Collectors.toList());
-        response.setRecentTransactions(recent);
-
-        // 4. Current Month Expense Category Breakdown
-        List<Transaction> monthExpenses = transactionRepository.findByUserIdAndDateRange(userId, startOfMonth, endOfMonth)
-                .stream()
-                .filter(t -> t.getType() == TransactionType.EXPENSE)
-                .collect(Collectors.toList());
-
-        Map<String, BigDecimal> categorySums = new HashMap<>();
-        Map<String, String> categoryColors = new HashMap<>();
-        Map<String, String> categoryIcons = new HashMap<>();
-        Map<String, Long> categoryCounts = new HashMap<>();
-
-        for (Transaction t : monthExpenses) {
-            String catName = t.getCategory() != null ? t.getCategory().getName() : "Other Expense";
-            String catColor = t.getCategory() != null ? t.getCategory().getColor() : "#64748b";
-            String catIcon = t.getCategory() != null ? t.getCategory().getIcon() : "tag";
-
-            categorySums.merge(catName, t.getAmount(), BigDecimal::add);
-            categoryColors.putIfAbsent(catName, catColor);
-            categoryIcons.putIfAbsent(catName, catIcon);
-            categoryCounts.merge(catName, 1L, Long::sum);
-        }
 
         List<CategoryBreakdownDto> breakdownList = new ArrayList<>();
         for (Map.Entry<String, BigDecimal> entry : categorySums.entrySet()) {
@@ -126,25 +137,34 @@ public class DashboardService {
         breakdownList.sort(Comparator.comparing(CategoryBreakdownDto::getTotalAmount).reversed());
         response.setExpenseCategoryBreakdown(breakdownList);
 
-        // 5. Past 6 Months Trends
+        // 5. Past 6 Months Trends (In-memory aggregation)
+        Map<YearMonth, BigDecimal> incByMonth = new HashMap<>();
+        Map<YearMonth, BigDecimal> expByMonth = new HashMap<>();
+
+        for (Transaction t : recentTransactions) {
+            if (t.getTransactionDate() != null) {
+                YearMonth ym = YearMonth.from(t.getTransactionDate());
+                if (t.getType() == TransactionType.INCOME) {
+                    incByMonth.merge(ym, t.getAmount(), BigDecimal::add);
+                } else if (t.getType() == TransactionType.EXPENSE) {
+                    expByMonth.merge(ym, t.getAmount(), BigDecimal::add);
+                }
+            }
+        }
+
         List<MonthlyTrendDto> trends = new ArrayList<>();
         for (int i = 5; i >= 0; i--) {
             YearMonth ym = currentYearMonth.minusMonths(i);
-            LocalDate mStart = ym.atDay(1);
-            LocalDate mEnd = ym.atEndOfMonth();
-
-            BigDecimal inc = transactionRepository.sumAmountByUserIdAndTypeAndDateRange(
-                    userId, TransactionType.INCOME, mStart, mEnd);
-            BigDecimal exp = transactionRepository.sumAmountByUserIdAndTypeAndDateRange(
-                    userId, TransactionType.EXPENSE, mStart, mEnd);
+            BigDecimal inc = incByMonth.getOrDefault(ym, BigDecimal.ZERO);
+            BigDecimal exp = expByMonth.getOrDefault(ym, BigDecimal.ZERO);
 
             String monthLabel = ym.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + " " + ym.getYear();
             trends.add(new MonthlyTrendDto(
                     monthLabel,
                     ym.getMonthValue(),
                     ym.getYear(),
-                    inc != null ? inc : BigDecimal.ZERO,
-                    exp != null ? exp : BigDecimal.ZERO
+                    inc,
+                    exp
             ));
         }
         response.setMonthlyTrends(trends);

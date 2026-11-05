@@ -67,5 +67,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
+    @Query("SELECT t.type, COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.user.id = :userId GROUP BY t.type")
+    List<Object[]> sumAmountGroupedByType(@Param("userId") Long userId);
+
+    @Query("SELECT t FROM Transaction t LEFT JOIN FETCH t.category WHERE t.user.id = :userId " +
+           "AND t.transactionDate >= :startDate ORDER BY t.transactionDate DESC, t.id DESC")
+    List<Transaction> findRecentWithCategory(@Param("userId") Long userId, @Param("startDate") LocalDate startDate);
+
     List<Transaction> findTop5ByUserIdOrderByTransactionDateDescIdDesc(Long userId);
 }
